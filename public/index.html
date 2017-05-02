@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Restful Evaluation</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-resource.min.js"></script>
+	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+	<style type="text/css">
+    	body {background-color: #00FFCC}
+    	h1 {background-color: #FF9999}
+        img {
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                padding: 5px;
+                width: 80px;
+             }
+
+    </style>
+
+</head>
+<body>
+    <div class="container">
+ 	<div ng-app="ExchangeApp" ng-controller="ExchangeCtrl">
+ 		<center><h1> ระบบเลือกตั้ง ออนไลน์ </h1></center><br> 
+ 		
+       <TABLE border="1" align="right" width="0%" cellpadding="5">
+
+       <tr>
+       	  <td> หมายเลข </td>
+       	  <td> รูปภาพ </td>
+       	  <td> ชื่อผู้สมัคร </td>
+       	  <td> % คะแนนปัจจุบัน </td>
+       </tr>
+
+       <tr>
+       	<td><img src="images/A.png"></td>
+       	<td><img src="images/1.jpg"></td>
+       	<td>นายกูฮารน ตวันดอเลาะ</td>
+       	<td> {{((exchanges[score.num].scores.A) / exchanges[score.num].scores.num) *100 }}</td>
+       </tr>
+
+       <tr>
+       	<td><img src="images/B.gif"></td>
+       	<td><img src="images/2.jpg"></td>
+       	<td>นายฮามือเซาะ เจ๊ะเต๊ะ</td>
+       	<td>{{((exchanges[score.num].scores.B) / exchanges[score.num].scores.num) *100 }}</td>
+       </tr>
+
+       <tr>
+       	<td><img src="images/C.jpeg"></td>
+       	<td><img src="images/3.jpg"></td>
+       	<td>นายสุไลมาน แดเบาะ</td>
+       	<td>{{((exchanges[score.num].scores.C) / exchanges[score.num].scores.num) *100 }}</td>
+       </tr>
+
+       <tr>
+       	<td><img src="images/D.png"></td>
+       	<td><img src="images/4.jpg"></td>
+       	<td>นางสาวอัฟรา เย็ง</td>
+       	<td>{{((exchanges[score.num].scores.D) / exchanges[score.num].scores.num) *100 }}</td>
+       </tr>
+       	
+       </TABLE>
+
+      
+      </br> </br> </br> </br> 
+       <font color = "#FF0000">
+
+       	<h4>ใส่ข้อมูลของท่าน</h4></font>
+  		<form role="form">
+    		<div class="form-group">
+      			<label for="money">Money :</label>
+      			NAME : <input type="text"  placeholder="NAME" ng-model="addExchange.name">
+      			STUDENT ID : <input type="text"  placeholder="Student ID" ng-model="addExchange.sid"></br>
+      			เลือกหมายเลขผู้สมัคร : 
+  					<select ng-model = "addExchange.eva">
+					<option value="A"> A </option>
+					<option value="B"> B </option>
+					<option value="C"> C </option>
+					<option value="D"> D </option>
+					</select>
+					<button ng-click="add()" class="btn btn-primary">SEND</button>
+    		</div>
+
+</br> 
+<font color = "#FF0000"><h4>ผู้มาเลือกตั้ง :</h4></font>
+        <table border="1" align="left" width="50%" cellpadding="20">
+ 		<tr>
+ 			<td> ลำดับ </td>
+ 			<td> ชื่อ - สกุล </td>
+ 			<td> รหัสนักศึกษา </td>
+ 			<td> เลขที่เลือก </td>
+ 		</tr>
+ 		<tr ng-repeat="exchange in exchanges track by $index">
+ 			<td> {{exchange.id}} </td>
+ 			<td> {{exchange.name}} </td>
+ 			<td> {{exchange.sid}} </td>
+ 			<td> {{exchange.eva}} </td>
+ 			</tr>
+
+         </table>
+
+    		
+
+ 	<script type="text/javascript">
+
+ 		var app = angular.module("ExchangeApp",['ngResource'])
+ 		app.controller("ExchangeCtrl", function($scope, $resource){
+ 			var Exchange = $resource('/api/exchanges/:exchange_id',{exchange_id: '@id'},
+ 				{ 
+ 					update: {method:'PUT' }	
+ 				})
+ 			$scope.editExchange = {}
+ 			$scope.result = {}
+ 			$scope.exchanges = Exchange.query()
+
+ 	  $scope.score = {
+	    
+          "num" : 0
+         }
+ 			
+           
+ 			$scope.get = function(id) {
+ 				Exchange.get({exchange_id:id}, function(exchange) {
+
+ 					$scope.result = exchange
+ 					
+ 				})
+ 			}	
+
+ 			$scope.add =  function() {
+
+ 			
+			    Exchange.save({name: $scope.addExchange.name, 
+			    		    sid: $scope.addExchange.sid,
+                  eva : $scope.addExchange.eva })
+
+		                 $scope.exchanges = Exchange.query()
+                 				    
+ 			}
+ 			
+ 		})
+ 	</script>
+
+</body>
+</html>
