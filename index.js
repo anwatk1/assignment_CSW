@@ -56,6 +56,6 @@ router.route('/exchanges')
 app.use('/api', bodyParser.json(), router)
 // app.use('/api',bodyParser.urlencoded({extended:false}), router)
 
-app.listen(50012, function() {
+app.listen(50005, function() {
 	console.log('server is running...')
 })
